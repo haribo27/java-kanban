@@ -2,7 +2,7 @@ package model;
 
 public class SubTask extends Task {
 
-    private Epic epic;
+    private final Epic epic;
 
     public SubTask(String name, String description, TaskProgressStatus taskProgressStatus, Epic epic) {
         super(name, description, taskProgressStatus);
@@ -11,5 +11,11 @@ public class SubTask extends Task {
 
     public Epic getEpic() {
         return epic;
+    }
+
+    @Override
+    public String toString() {
+        return "model.SubTask: " + getName() + " Description: " + getDescription()
+                + " Status: " + getTaskProgressStatus();
     }
 }

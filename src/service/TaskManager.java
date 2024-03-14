@@ -5,13 +5,12 @@ import model.SubTask;
 import model.Task;
 import model.TaskProgressStatus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TaskManager {
 
-    private int id = 0;
+    private int id = 1;
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
 
@@ -20,20 +19,12 @@ public class TaskManager {
     public void createSubTask(SubTask subTask) {
         subTask.setId(id++);
         subTasks.put(subTask.getId(), subTask);
+        subTask.getEpic().getSubtasks().put(subTask.getId(), subTask);
+        setEpicProgressStatus(subTask.getEpic());
     }
 
     public void createEpic(Epic epic) {
-        ArrayList<SubTask> subTasks = epic.getSubtasks();
-        boolean statusInProgress = subTasks.stream()
-                .anyMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.IN_PROGRESS || x.getTaskProgressStatus() == TaskProgressStatus.DONE);
-        boolean statusDone = subTasks.stream().allMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.DONE);
-        if (statusDone) {
-            epic.setTaskProgressStatus(TaskProgressStatus.DONE);
-        } else if (statusInProgress) {
-            epic.setTaskProgressStatus(TaskProgressStatus.IN_PROGRESS);
-        } else {
-            epic.setTaskProgressStatus(TaskProgressStatus.NEW);
-        }
+        setEpicProgressStatus(epic);
         epic.setId(id++);
         epics.put(epic.getId(), epic);
     }
@@ -55,7 +46,7 @@ public class TaskManager {
         return tasks;
     }
 
-    public void deleteSubtasks() {
+    public void deleteAllSubtasks() {
         subTasks.clear();
     }
 
@@ -63,7 +54,7 @@ public class TaskManager {
         epics.clear();
     }
 
-    public void deleteTask() {
+    public void deleteAllTasks() {
         tasks.clear();
     }
 
@@ -79,16 +70,10 @@ public class TaskManager {
         return tasks.get(id);
     }
 
-    public void getEpicSubtasks(Epic epic) {
-        for (Map.Entry<Integer, Epic> pair : epics.entrySet()) {
-            if (pair.getValue().equals(epic)) {
-                System.out.println(pair.getValue().getSubtasks());
-            }
-        }
-    }
-
     public void updateSubtask(SubTask subTask, int id) {
         subTasks.put(id, subTask);
+        subTask.getEpic().addSubTask(id, subTask);
+        setEpicProgressStatus(subTask.getEpic());
     }
 
     public void updateEpic(Epic epic, int id) {
@@ -111,7 +96,21 @@ public class TaskManager {
         tasks.remove(id);
     }
 
-    public ArrayList<SubTask> getEpicsSubtasks(Epic epic) {
+    public HashMap<Integer, SubTask> getEpicsSubtasks(Epic epic) {
         return epic.getSubtasks();
+    }
+
+    public void setEpicProgressStatus(Epic epic) {
+        HashMap<Integer, SubTask> subTasks = epic.getSubtasks();
+        boolean statusInProgress = subTasks.values().stream()
+                .anyMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.IN_PROGRESS || x.getTaskProgressStatus() == TaskProgressStatus.DONE);
+        boolean statusDone = subTasks.values().stream().allMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.DONE);
+        if (statusDone) {
+            epic.setTaskProgressStatus(TaskProgressStatus.DONE);
+        } else if (statusInProgress) {
+            epic.setTaskProgressStatus(TaskProgressStatus.IN_PROGRESS);
+        } else {
+            epic.setTaskProgressStatus(TaskProgressStatus.NEW);
+        }
     }
 }
