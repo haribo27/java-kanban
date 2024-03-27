@@ -134,7 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
         return epics.get(id).getSubtasks();
     }
 
-    public void setEpicProgressStatus(Epic epic) {
+    private void setEpicProgressStatus(Epic epic) {
         List<SubTask> epicSubTasks = epic.getSubtasks();
         boolean statusNew = epicSubTasks.stream().allMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.NEW);
         boolean statusDone = epicSubTasks.stream().allMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.DONE);
