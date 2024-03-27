@@ -2,64 +2,70 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.TaskProgressStatus;
-import service.TaskManager;
+import service.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
 
         Task homeworkTask = new Task("Сделать домашнее задание",
                 "Уроки по математике", TaskProgressStatus.DONE);
         Task washingTask = new Task("Стирка вещей",
                 "Постирать белые вещи", TaskProgressStatus.NEW);
-        manager.createTask(homeworkTask);
-        manager.createTask(washingTask);
+        manager.addNewTask(homeworkTask);
+        manager.addNewTask(washingTask);
 
         Epic removalEpic = new Epic("Переезд",
                 "Собрать вещи, заказать грузовую машину", TaskProgressStatus.IN_PROGRESS);
         Epic healingEpic = new Epic("Пройти курс лечения",
                 "Найти подходящую клинику и пройти курс лечения", TaskProgressStatus.DONE);
-        manager.createEpic(removalEpic);
-        manager.createEpic(healingEpic);
+        manager.addNewEpic(removalEpic);
+        manager.addNewEpic(healingEpic);
 
         SubTask collectClothesSubtask = new SubTask("Сложить в пакеты одежду",
-                "Складывать только одежду, ничего более", TaskProgressStatus.NEW, removalEpic);
+                "Складывать только одежду, ничего более", TaskProgressStatus.DONE, removalEpic);
         SubTask collectFurnitureSubtask = new SubTask("Сложить в газель мебель",
                 "Упаковать мебель в пупырчатую пленку и загрузить все в газель",
-                TaskProgressStatus.DONE, removalEpic);
+                TaskProgressStatus.IN_PROGRESS, removalEpic);
         SubTask findClinicSubtask = new SubTask("Найти хорошее мед. учреждение",
                 "Учитывать стоимость, рейтинг клиники", TaskProgressStatus.NEW, healingEpic);
-        manager.createSubTask(collectClothesSubtask);
-        manager.createSubTask(collectFurnitureSubtask);
-        manager.createSubTask(findClinicSubtask);
+        manager.addNewSubtask(collectClothesSubtask);
+        manager.addNewSubtask(collectFurnitureSubtask);
+        manager.addNewSubtask(findClinicSubtask);
 
+        printAllTasks(manager);
+    }
 
-        System.out.println(manager.getEpics() + "\n" + manager.getTasks() + "\n" + manager.getSubTasks());
+    private static void printAllTasks(TaskManager manager) {
 
-        SubTask collectClothesSubtaskUpdated = new SubTask("Сложить в пакеты одежду",
-                "Складывать только одежду, ничего более", TaskProgressStatus.DONE, removalEpic);
-        SubTask collectFurnitureSubtaskUpdated = new SubTask("Сложить в газель мебель",
-                "Упаковать мебель в пупырчатую пленку и загрузить все в газель",
-                TaskProgressStatus.DONE, removalEpic);
-        SubTask findClinicSubtaskUpdated = new SubTask("Найти хорошее мед. учреждение",
-                "Учитывать стоимость, рейтинг клиники", TaskProgressStatus.DONE, healingEpic);
-        Task homeworkTaskUpdated = new Task("Сделать домашнее задание",
-                "Уроки по математике", TaskProgressStatus.NEW);
+        manager.getTask(2);
+        manager.getTask(1);
+        manager.getEpic(4);
+        manager.getSubtask(6);
+        manager.getSubtask(7);
 
-        manager.updateSubtask(collectClothesSubtaskUpdated, 5);
-        manager.updateSubtask(collectFurnitureSubtaskUpdated, 6);
-        manager.updateSubtask(findClinicSubtaskUpdated, 7);
-        manager.updateTask(homeworkTaskUpdated, 1);
-        System.out.println();
-        System.out.println(manager.getEpics() + "\n" + manager.getTasks() + "\n" + manager.getSubTasks());
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Task epic : manager.getEpics()) {
+            System.out.println(epic);
 
-        System.out.println();
-        manager.deleteTaskFromId(1);
-        manager.deleteEpicFromId(3);
-        System.out.println(manager.getEpics() + "\n" + manager.getTasks() + "\n" + manager.getSubTasks());
+            for (Task task : manager.getEpicSubtasks(epic.getId())) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getSubtasks()) {
+            System.out.println(subtask);
+        }
 
-
+        System.out.println("История:");
+        for (Task task : manager.getHistoryManager().getHistory()) {
+            System.out.println(task);
+        }
     }
 }

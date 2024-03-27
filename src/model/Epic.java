@@ -1,24 +1,27 @@
 package model;
 
-import service.TaskManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class Epic extends Task {
 
-    private final HashMap<Integer, SubTask> subtasks = new HashMap<>();
+    private List<SubTask> subtasks = new ArrayList<>();
 
     public Epic(String name, String description, TaskProgressStatus taskProgressStatus) {
         super(name, description, taskProgressStatus);
     }
 
-    public HashMap<Integer, SubTask> getSubtasks() {
+    public List<SubTask> getSubtasks() {
         return subtasks;
     }
 
-    public void addSubTask(int id, SubTask subTask) {
-        subtasks.put(id, subTask);
+    public void addSubTask(SubTask subTask) {
+        subtasks.add(subTask);
+    }
+
+    public void setSubtasks(List<SubTask> subtasks) {
+        this.subtasks = subtasks;
     }
 
     @Override
