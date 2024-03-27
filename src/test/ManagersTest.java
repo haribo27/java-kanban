@@ -3,14 +3,13 @@ package test;
 import model.Epic;
 import model.SubTask;
 import model.Task;
-import model.TaskProgressStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
-import static model.TaskProgressStatus.NEW;
+import static model.TaskProgressStatus.*;
 
 class ManagersTest {
 
@@ -94,13 +93,12 @@ class ManagersTest {
     }
 
     @Test
-    public void checkTaskStatusAfterUpdate() {
-        SubTask subTask1 = new SubTask("new Subtask1", "new desc", TaskProgressStatus.DONE, epic);
+    public void checkEpicStatusAfterUpdate() {
+        SubTask subTask1 = new SubTask("new Subtask1", "new desc", NEW, epic);
         manager.addNewSubtask(subTask1);
-        Assertions.assertEquals(TaskProgressStatus.IN_PROGRESS, epic.getTaskProgressStatus());
-        SubTask subTask2 = new SubTask("new Subtask3", "new desc", TaskProgressStatus.DONE, epic);
+        SubTask subTask2 = new SubTask("new Subtask3", "new desc",IN_PROGRESS, epic);
         manager.updateSubtask(subTask2, 2);
-        Assertions.assertEquals(TaskProgressStatus.DONE,
+        Assertions.assertEquals(IN_PROGRESS,
                 epic.getTaskProgressStatus(), "Статус Epic после обновления задачи установлен не верно");
     }
 
