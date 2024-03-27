@@ -108,7 +108,7 @@ class ManagersTest {
         manager.getSubtask(2);
         manager.getEpic(3);
         Assertions.assertEquals(3,
-                manager.getHistoryManager().getHistory().size(), "Не верное количество история");
+                manager.getHistory().size(), "Не верное количество история");
     }
 
     @Test
@@ -126,6 +126,6 @@ class ManagersTest {
         manager.getSubtask(2);
         manager.getEpic(3);
         Assertions.assertEquals(10,
-                manager.getHistoryManager().getHistory().size(), "Кол-во историй не должно превышать 10");
+                manager.getHistory().size(), "Кол-во историй не должно превышать 10");
     }
 }

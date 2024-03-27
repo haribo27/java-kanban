@@ -134,7 +134,6 @@ public class InMemoryTaskManager implements TaskManager {
         return epics.get(id).getSubtasks();
     }
 
-    @Override
     public void setEpicProgressStatus(Epic epic) {
         List<SubTask> epicSubTasks = epic.getSubtasks();
         boolean statusNew = epicSubTasks.stream().allMatch(x -> x.getTaskProgressStatus() == TaskProgressStatus.NEW);
@@ -149,7 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HistoryManager getHistoryManager() {
-        return historyManager;
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 }
